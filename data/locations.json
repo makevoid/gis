@@ -1,11 +1,1 @@
-[
-  {
-    "lat": "43.78", "lng": "11.25", "name": "Antani", "category": "F"
-  },
-  {
-    "lat": "42", "lng": "28", "name": "Antani 2", "category": "F"
-  },
-  {
-    "lat": "43", "lng": "26", "name": "Antani 3", "category": "G"
-  }
-]
+[{"name":"République Centrafricaine, Ouham Pendé","category":"A","lat":6.4850984,"lng":16.1580937},{"name":"République Centrafricaine - Sibut (Kémo)","category":"A","lat":5.7333333,"lng":19.0833333},{"name":"Sudan, Kassala State, Hamesh Koreib","category":"A","lat":15.45,"lng":36.4},{"name":"West Darfur, Sudan","category":"B","lat":12.8463561,"lng":23.0011989},{"name":"Koinadugu, Wara Wara Yagala, Sengbe, Folosaba Dembelia, Dembelia Sinkunia, Kasonko.","category":"B","lat":9.5308619,"lng":-11.5248055},{"name":"Bonthe District, Sierra Leone","category":"B","lat":7.527414899999999,"lng":-12.1632718}]

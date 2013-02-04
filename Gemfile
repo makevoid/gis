@@ -19,6 +19,8 @@ group :development do
   gem "guard-coffeescript", require: false
   gem "guard-livereload",   require: false
   # gem "growl"
+
+  gem "geocoder"
 end
 
 group :test do

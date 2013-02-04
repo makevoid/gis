@@ -9,7 +9,8 @@
   %body
     #container
       %header
-        %h1= TITLE
+        %h1
+          %a{ href: "https://github.com/makevoid/gis" }= TITLE
       %nav
       %section.content= yield
     %script{ type: "text/javascript", src: "/js/vendor/underscore.js" }

@@ -23,8 +23,7 @@ end
 
 
 def read_locations
-  json = File.open("#{PATH}/data/locations.json", "r:UTF-8").read
-  JSON.parse json
+  File.open("#{PATH}/data/locations.json", "r:UTF-8").read
 end
 
 class Gis < Sinatra::Base

@@ -1,5 +1,6 @@
-# sig
+# GIS
+### Geo Information System
 
-Generated with Sinatrize
+creates google maps with markers from CSVs
 
-tip: find and replace for [...] for meta tags and other useful needed for publication
+- export image (canvas like screenshot of the page?)

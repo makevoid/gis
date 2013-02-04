@@ -2,7 +2,7 @@ path = File.expand_path '../', __FILE__
 
 require "#{path}/config/env.rb"
 
-class Sig < Sinatra::Base
+class Gis < Sinatra::Base
   include Voidtools::Sinatra::ViewHelpers
 
   # partial :comment, { comment: "blah" }

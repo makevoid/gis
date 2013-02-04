@@ -35,7 +35,7 @@ class Gis < Sinatra::Base
   end
 
   get "/locations" do
-    File.read "#{PATH}/data/locations.json"
+    File.open("#{PATH}/data/locations.json", "r:UTF-8").read
     # out = ""
     # LOCATIONS.each do |location|
     #   out << ""

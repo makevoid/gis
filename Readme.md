@@ -21,7 +21,7 @@ creates google maps with markers from CSVs
 
 ### convert locations.csv to locations.json geocoding locations
 
-   bin/gis
+   ruby -e "Localizer.new.localize" -r ./models/localizer.rb
 
 ### todo:
 

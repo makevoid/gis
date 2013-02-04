@@ -1,3 +1,4 @@
+# encoding: utf-8
 path = File.expand_path '../', __FILE__
 PATH = path
 
@@ -22,7 +23,7 @@ end
 
 
 def read_locations
-  json = File.read "#{PATH}/data/locations.json"
+  json = File.open("#{PATH}/data/locations.json", "r:UTF-8").read
   JSON.parse json
 end
 
@@ -35,12 +36,7 @@ class Gis < Sinatra::Base
   end
 
   get "/locations" do
-    File.open("#{PATH}/data/locations.json", "r:UTF-8").read
-    # out = ""
-    # LOCATIONS.each do |location|
-    #   out << ""
-    # end
-    # out
+    LOCATIONS
   end
 end
 

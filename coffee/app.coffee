@@ -1,31 +1,25 @@
+gmap = null
 
-
-initialize = ->
-  mapDiv = document.getElementById("map")
-  map = new google.maps.Map(mapDiv,
-    center: new google.maps.LatLng(37.4419, -122.1419)
-    zoom: 13
+map_init = ->
+  mapDiv = $ "#map"
+  gmap = new google.maps.Map mapDiv.get(0),
+    center: new google.maps.LatLng 20, 100 # map start position
+    zoom: 2
     mapTypeId: google.maps.MapTypeId.ROADMAP
-  )
-  google.maps.event.addListenerOnce map, "tilesloaded", addMarkers
+
+  google.maps.event.addListenerOnce gmap, "tilesloaded", addMarkers
 
 
 addMarkers = ->
-  bounds = map.getBounds()
-  southWest = bounds.getSouthWest()
-  northEast = bounds.getNorthEast()
-  lngSpan = northEast.lng() - southWest.lng()
-  latSpan = northEast.lat() - southWest.lat()
-  i = 0
+  $.getJSON "/locations", (locations) ->
+    for loc in locations
+      image = "/img/marker_med.png"
+      latLng = new google.maps.LatLng loc.lat, loc.lng
+      marker = new google.maps.Marker
+        position: latLng
+        map: gmap
+        icon: image
 
-  while i < 10
-    latLng = new google.maps.LatLng(southWest.lat() + latSpan * Math.random(), southWest.lng() + lngSpan * Math.random())
-    marker = new google.maps.Marker(
-      position: latLng
-      map: map
-    )
-    i++
 
 $ ->
-  map = undefined
-  initialize()
+  map_init()

@@ -5,8 +5,8 @@ creates google maps with markers from CSVs
 
 ### features:
 
-- read and geocodes csv, save position datas into data.json
-- read data.json and display a google map with markers
+- read and geocodes csv, save position datas into locations.json
+- read locations.json and display a google map with markers
 
 ### launch it:
 
@@ -19,7 +19,7 @@ creates google maps with markers from CSVs
 - visit http://localhost:3000
 
 
-### convert data.csv to data.json geocoding locations
+### convert locations.csv to locations.json geocoding locations
 
    bin/gis
 

@@ -1,41 +1,36 @@
-(function() {
-  var addMarkers, initialize;
+var addMarkers, gmap, map_init;
 
-  initialize = function() {
-    var map, mapDiv;
-    mapDiv = document.getElementById("map");
-    map = new google.maps.Map(mapDiv, {
-      center: new google.maps.LatLng(37.4419, -122.1419),
-      zoom: 13,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    });
-    return google.maps.event.addListenerOnce(map, "tilesloaded", addMarkers);
-  };
+gmap = null;
 
-  addMarkers = function() {
-    var bounds, i, latLng, latSpan, lngSpan, marker, northEast, southWest, _results;
-    bounds = map.getBounds();
-    southWest = bounds.getSouthWest();
-    northEast = bounds.getNorthEast();
-    lngSpan = northEast.lng() - southWest.lng();
-    latSpan = northEast.lat() - southWest.lat();
-    i = 0;
+map_init = function() {
+  var mapDiv;
+  mapDiv = $("#map");
+  gmap = new google.maps.Map(mapDiv.get(0), {
+    center: new google.maps.LatLng(20, 100),
+    zoom: 2,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+  return google.maps.event.addListenerOnce(gmap, "tilesloaded", addMarkers);
+};
+
+addMarkers = function() {
+  return $.getJSON("/locations", function(locations) {
+    var image, latLng, loc, marker, _i, _len, _results;
     _results = [];
-    while (i < 10) {
-      latLng = new google.maps.LatLng(southWest.lat() + latSpan * Math.random(), southWest.lng() + lngSpan * Math.random());
-      marker = new google.maps.Marker({
+    for (_i = 0, _len = locations.length; _i < _len; _i++) {
+      loc = locations[_i];
+      image = "/img/marker_med.png";
+      latLng = new google.maps.LatLng(loc.lat, loc.lng);
+      _results.push(marker = new google.maps.Marker({
         position: latLng,
-        map: map
-      });
-      _results.push(i++);
+        map: gmap,
+        icon: image
+      }));
     }
     return _results;
-  };
-
-  $(function() {
-    var map;
-    map = void 0;
-    return initialize();
   });
+};
 
-}).call(this);
+$(function() {
+  return map_init();
+});

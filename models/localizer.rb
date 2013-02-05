@@ -14,17 +14,17 @@ class Localizer
 
   def localize
     locations = []
+    puts "geocoding...\nfailures:"
     CSV.foreach "#{PATH}/data/locations.csv" do |row|
       name, category = row[0..1]
       geo = Geocoder.search(name).first
-      puts "geocoding...\nfailures:"
       if geo
         locations << { name: name, category: category, lat: geo.latitude, lng: geo.longitude }
       else
         puts name
       end
-      puts "\n\nfinished"
     end
+    puts "\n\nfinished"
 
     File.open "#{PATH}/data/locations.json", "w" do |file|
       file.write locations.to_json

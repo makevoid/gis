@@ -1,6 +1,12 @@
-var addMarkers, gmap, map_init;
+var addMarkers, colors, gmap, map_init;
 
 gmap = null;
+
+colors = {
+  rosso: "red",
+  giallo: "yellow",
+  blu: "blue"
+};
 
 map_init = function() {
   var mapDiv;
@@ -15,11 +21,16 @@ map_init = function() {
 
 addMarkers = function() {
   return $.getJSON("/locations", function(locations) {
-    var image, latLng, loc, marker, _i, _len, _results;
+    var cat_color, color, image, latLng, loc, marker, _i, _len, _results;
     _results = [];
     for (_i = 0, _len = locations.length; _i < _len; _i++) {
       loc = locations[_i];
-      image = "/img/marker_med.png";
+      color = "red";
+      cat_color = colors[loc.category];
+      if (cat_color) {
+        color = cat_color;
+      }
+      image = "/img/marker_med_" + color + ".png";
       latLng = new google.maps.LatLng(loc.lat, loc.lng);
       _results.push(marker = new google.maps.Marker({
         position: latLng,

@@ -1,15 +1,16 @@
-var baloon, colors, gmap, locations, map_init, marker_place, markers;
+var baloon, colors, gmap, label, locations, map_init, marker_place, markers;
 
 gmap = null;
 
 baloon = null;
 
-locations = [];
+locations = null;
 
 colors = {
   rosso: "red",
   giallo: "yellow",
-  blu: "blue"
+  blu: "blue",
+  verde: "green"
 };
 
 map_init = function() {
@@ -38,6 +39,14 @@ markers = function() {
   });
 };
 
+label = function(object, value) {
+  if (object[value]) {
+    return "<p>" + (value.replace(/_/, " ")) + ": " + object[value] + "</p>";
+  } else {
+    return "";
+  }
+};
+
 marker_place = function(loc) {
   var cat_color, color, image, latLng, marker;
   color = "red";
@@ -53,7 +62,7 @@ marker_place = function(loc) {
     icon: image
   });
   return google.maps.event.addListener(marker, 'click', function() {
-    baloon.setContent("<p><strong>" + loc.name + "</strong></p><p>project id: " + loc.project_id + "</p><p>cris id: " + loc.cris_id + "</p>");
+    baloon.setContent("<p><strong>" + loc.name + "</strong></p>" + (label(loc, "project_id")) + (label(loc, "cris_id")));
     baloon.open(gmap, this);
   });
 };

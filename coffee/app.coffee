@@ -1,9 +1,12 @@
-gmap, baloon, locations = null, null, null
+gmap = null
+baloon = null
+locations = null
 
 colors =
   rosso:  "red"
   giallo: "yellow"
   blu:    "blue"
+  verde:  "green"
 
 map_init = ->
   mapDiv = $ "#map"
@@ -14,8 +17,6 @@ map_init = ->
 
   google.maps.event.addListenerOnce gmap, "tilesloaded", markers
 
-
-
 markers = ->
   baloon = new google.maps.InfoWindow
     content: 'not loaded...'
@@ -24,6 +25,12 @@ markers = ->
   $.getJSON "/locations/#{data_name}.json", (locations) ->
     for loc in locations
       marker_place loc
+
+label = (object, value) ->
+  if object[value]
+    "<p>#{value.replace(/_/, " ")}: #{object[value]}</p>"
+  else
+    ""
 
 marker_place = (loc) ->
   color = "red"
@@ -37,7 +44,7 @@ marker_place = (loc) ->
     icon: image
   google.maps.event.addListener marker, 'click', ->
     # console.log locations
-    baloon.setContent "<p><strong>#{loc.name}</strong></p><p>project id: #{loc.project_id}</p><p>cris id: #{loc.cris_id}</p>"
+    baloon.setContent "<p><strong>#{loc.name}</strong></p>#{label loc, "project_id"}#{label loc, "cris_id"}"
     baloon.open gmap, this
     return
 

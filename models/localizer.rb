@@ -30,21 +30,24 @@ class Localizer
 
   def localize_name(name)
     locations = []
+    refuseds = []
     puts "geocoding #{name}:\nfailures:"
     idx = 0
     CSV.foreach("#{PATH}/data/#{name}.csv", { col_sep: ";" }) do |row|
       idx += 1
       next if idx == 1
-      project_id, cris_id, loc_name, category = row
+      loc_name, category, project_id, cris_id = row
       geo = Geocoder.search(loc_name).first
       if geo
         locations << { name: loc_name, category: category, lat: geo.latitude, lng: geo.longitude, project_id: project_id, cris_id: cris_id }
       else
-        puts loc_name
+        refuseds << row
+        puts "f> #{loc_name} > https://maps.google.com/maps?q=#{loc_name.gsub("\s", "+")}"
       end
       sleep 0.15
     end
-    puts "\n\nfinished"
+    File.open("#{PATH}/data/#{name}_refuseds.csv", "w"){ |f| f.write refuseds.join("\n") }
+    puts "\n\nfinished - real geocoding api: http://code.google.com/apis/ajax/playground/#geocoding_simple"
 
     File.open "#{PATH}/data/#{name}.json", "w" do |file|
       file.write locations.to_json

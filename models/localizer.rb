@@ -21,6 +21,8 @@ class Localizer
     for name in names
       unless @names.first.is_a? NullName
         next unless @names.include? name.to_s
+        next if name =~ /_refuseds/
+        next if name =~ /_good/
       end
       localize_name name
     end
@@ -31,6 +33,7 @@ class Localizer
   def localize_name(name)
     locations = []
     refuseds = []
+    good = []
     puts "geocoding #{name}:\nfailures:"
     idx = 0
     CSV.foreach("#{PATH}/data/#{name}.csv", { col_sep: ";" }) do |row|
@@ -39,14 +42,17 @@ class Localizer
       loc_name, category, project_id, cris_id = row
       geo = Geocoder.search(loc_name).first
       if geo
+        good << row.join(";")
         locations << { name: loc_name, category: category, lat: geo.latitude, lng: geo.longitude, project_id: project_id, cris_id: cris_id }
       else
-        refuseds << row
-        puts "f> #{loc_name} > https://maps.google.com/maps?q=#{loc_name.gsub("\s", "+")}"
+        refuseds << row.join(";")
+        map_url = "https://maps.google.com/maps?q=#{loc_name.gsub("\s", "+")}" if loc_name
+        puts "f> #{loc_name} > #{map_url}"
       end
       sleep 0.15
     end
-    File.open("#{PATH}/data/#{name}_refuseds.csv", "w"){ |f| f.write refuseds.join("\n") }
+    File.open("#{PATH}/data/#{name}_good.csv", "w"){ |f| f.write good.join("\n") } unless good.empty?
+    File.open("#{PATH}/data/#{name}_refuseds.csv", "w"){ |f| f.write refuseds.join("\n") } unless refuseds.empty?
     puts "\n\nfinished - real geocoding api: http://code.google.com/apis/ajax/playground/#geocoding_simple"
 
     File.open "#{PATH}/data/#{name}.json", "w" do |file|

@@ -21,7 +21,7 @@ class Gis < Sinatra::Base
   end
 end
 
-LOCATION_NAMES = Dir.glob("#{PATH}/data/*.csv").map{ |file| File.basename file, ".csv" }
+LOCATION_NAMES = Dir.glob("#{PATH}/data/*.json").map{ |file| File.basename file, ".*" }.sort
 
 def read_locations
   locs = {}

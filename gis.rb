@@ -21,9 +21,14 @@ class Gis < Sinatra::Base
   end
 end
 
+LOCATION_NAMES = Dir.glob("#{PATH}/data/*.csv").map{ |file| File.basename file, ".csv" }
 
 def read_locations
-  File.open("#{PATH}/data/locations.json", "r:UTF-8").read
+  locs = {}
+  for loc in LOCATION_NAMES
+    locs[loc.to_sym] = File.open("#{PATH}/data/#{loc}.json", "r:UTF-8").read
+  end
+  locs
 end
 
 class Gis < Sinatra::Base
@@ -31,11 +36,22 @@ class Gis < Sinatra::Base
   LOCATIONS = read_locations
 
   get "/" do
+    @data_name = "a"
     haml :index
   end
 
-  get "/locations" do
-    LOCATIONS
+  get "/*.json" do |loc_name|
+    name = File.basename loc_name
+    data = LOCATIONS[name.to_sym]
+
+    content_type :json
+    halt 404, "{ \"error\": \"not found\", message: \"Location #{data} not found, maybe you mistyped the url\" }" unless data
+    data
+  end
+
+  get "/*" do |loc_name|
+    @data_name = loc_name
+    haml :index
   end
 end
 

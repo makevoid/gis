@@ -5,13 +5,16 @@
     %title= TITLE
     %link{ rel: "stylesheet", href: "/css/main.css" }
     = partial :metas
-
+    :javascript
+      var data_name = "#{@data_name}"
   %body
     #container
       %header
         %h1
           %a{ href: "https://github.com/makevoid/gis" }= TITLE
-      %nav
+        %nav
+          - LOCATIONS.each do |key, val|
+            %a{ href: "/#{key}" }= key.capitalize
       %section.content= yield
     %script{ type: "text/javascript", src: "/js/vendor/underscore.js" }
     %script{ type: "text/javascript", src: "/js/vendor/zepto.js" }

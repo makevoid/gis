@@ -7,26 +7,46 @@ require 'geocoder'
 
 PATH = File.expand_path "../../", __FILE__
 
-class Localizer
-  def initialize
+class NullName
+end
 
+class Localizer
+  def initialize(names=NullName.new)
+    @names = [names].flatten
   end
 
   def localize
-    locations = []
-    puts "geocoding...\nfailures:"
-    CSV.foreach "#{PATH}/data/locations.csv" do |row|
-      name, category = row[0..1]
-      geo = Geocoder.search(name).first
-      if geo
-        locations << { name: name, category: category, lat: geo.latitude, lng: geo.longitude }
-      else
-        puts name
+    names = Dir.glob("#{PATH}/data/*.csv").map{ |file| File.basename file, ".csv" }
+
+    for name in names
+      unless @names.first.is_a? NullName
+        next unless @names.include? name.to_s
       end
+      localize_name name
+    end
+  end
+
+  private
+
+  def localize_name(name)
+    locations = []
+    puts "geocoding #{name}:\nfailures:"
+    idx = 0
+    CSV.foreach("#{PATH}/data/#{name}.csv", { col_sep: ";" }) do |row|
+      idx += 1
+      next if idx == 1
+      project_id, cris_id, loc_name, category = row
+      geo = Geocoder.search(loc_name).first
+      if geo
+        locations << { name: loc_name, category: category, lat: geo.latitude, lng: geo.longitude, project_id: project_id, cris_id: cris_id }
+      else
+        puts loc_name
+      end
+      sleep 0.15
     end
     puts "\n\nfinished"
 
-    File.open "#{PATH}/data/locations.json", "w" do |file|
+    File.open "#{PATH}/data/#{name}.json", "w" do |file|
       file.write locations.to_json
     end
   end

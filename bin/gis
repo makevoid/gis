@@ -1,0 +1,3 @@
+# TODO: Localizer.new.localize $1
+
+ruby -e "Localizer.new.localize" -r ./models/localizer.rb

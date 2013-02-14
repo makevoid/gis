@@ -69,7 +69,7 @@ class Localizer
       else
         geo2 = Geocoder.search(project_title).first
         if geo2
-          locations << location.merge( lat: geo.latitude, lng: geo.longitude )
+          locations << location.merge( lat: geo2.latitude, lng: geo2.longitude )
         else
           refuseds << row.join(COL_SEP)
           log_failure loc_name, project_title

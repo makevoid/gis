@@ -45,15 +45,15 @@ class Localizer
     puts "geocoding #{name}:\nfailures:"
     idx = 0
     CSV.foreach("#{PATH}/data/#{name}.csv", { col_sep: ";" }) do |row|
-      # p row
-      # next
       idx += 1
       next if idx == 1
-      loc_name, category, project_id, cris_id = row
+
+      loc_name, category, project_id, cris_id, project_title = row
       geo = Geocoder.search(loc_name).first
       if geo
+        row += [project_title, geo.latitude, geo.longitude]
         good << row.join(";")
-        locations << { name: loc_name, category: category, lat: geo.latitude, lng: geo.longitude, project_id: project_id, cris_id: cris_id }
+        locations << { name: loc_name, category: category, lat: geo.latitude, lng: geo.longitude, project_id: project_id, cris_id: cris_id, project_title: project_title }
       else
         refuseds << row.join(";")
         map_url = "https://maps.google.com/maps?q=#{loc_name.gsub("\s", "+")}" if loc_name

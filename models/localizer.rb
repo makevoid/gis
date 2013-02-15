@@ -4,6 +4,63 @@
 
 require 'json'
 require 'geocoder'
+require 'google_drive'
+
+
+# new feature:
+#
+# GoogleDrive::Worksheet#to_ruby
+# GoogleDrive::Worksheet#load_ruby [{a: "b"}, {...]
+
+class GoogleDrive::Worksheet
+  def to_ruby
+    array = []
+    keys = []
+
+    # TODO: use this, it seems faster
+    # p rows
+
+    for col in 1..num_cols
+      keys << self[1, col]
+    end
+
+    for row in 2..num_rows
+      hash = {}
+
+      for col in 1..num_cols
+        key = keys[col-1]
+        hash[key.to_sym] = self[row, col]
+      end
+      array << hash
+    end
+    array
+  end
+
+  def load_ruby(array)
+
+    keys = array.first.keys
+
+    keys.each_with_index do |key, idx|
+      self[1, idx+1] = key
+    end
+
+    array.each_with_index do |hash, idx|
+      for col in 1..num_cols
+        self[idx+2, col] = hash[keys[col-1]]
+      end
+    end
+
+    save
+  end
+
+  def delete_and_remake
+    spreadsheet.add_worksheet "spreadsheet"
+    delete
+    spreadsheet.worksheets[0]
+  end
+end
+
+
 
 PATH = File.expand_path "../../", __FILE__
 
@@ -16,72 +73,46 @@ class Localizer
   end
 
   def localize
-    names = Dir.glob("#{PATH}/data/*.csv").map{ |file| File.basename file, ".csv" }
+    session = GoogleDrive.login "m4kevoid@gmail.com", "finalman"
+    spreadsheet = session.spreadsheet_by_key "0An6PEgBOu3TwdHZZNVMtNXBsR0ttR3BqaHI4cVllMEE"
+    @ws = spreadsheet.worksheets[0]
 
-    for name in names
-      unless @names.first.is_a? NullName
-        next unless @names.include? name.to_s
-        next if name =~ /_refuseds/
-        next if name =~ /_good/
-      end
-      localize_name name
-    end
+
+    localize_one
   end
-
-  def write_files(name, good, locations, refuseds)
-    # File.open("#{PATH}/data/#{name}_good.csv", "w"){ |f| f.write good.join("\n") } unless good.empty?
-    # File.open("#{PATH}/data/#{name}_refuseds.csv", "w"){ |f| f.write refuseds.join("\n") } unless refuseds.empty?
-    File.open "#{PATH}/data/#{name}.json", "w" do |file|
-      file.write locations.to_json
-    end
-  end
-
-  COL_SEP = ";"
 
   private
 
-  def log_failure loc_name, project_title
-    map_url = "https://maps.google.com/maps?q=#{loc_name.gsub("\s", "+")}" if loc_name
-    map_url2 = "https://maps.google.com/maps?q=#{project_title.gsub("\s", "+")}" if project_title
-    puts "f> #{loc_name} > #{map_url}\n#{project_title} > #{map_url2}\n"
-  end
+  def localize_one
 
-  def localize_name(name)
-    locations = []
-    refuseds = []
-    good = []
-    puts "geocoding #{name}:\nfailures:"
-    idx = 0
-    CSV.foreach("#{PATH}/data/#{name}.csv", { col_sep: COL_SEP }) do |row|
-      idx += 1
-      next if idx == 1
+    rows = @ws.to_ruby
 
-      loc_name, category, project_id, cris_id, project_title = row
-      geo_field = "name"
-      geo = Geocoder.search(loc_name).first
-
-      location = { name: loc_name, category: category, project_id: project_id, cris_id: cris_id, project_title: project_title, geo_field: geo_field }
+    rows.each do |row|
+      lat, lng = nil, nil
+      geo = Geocoder.search(row[:location_name]).first
 
       if geo
-        # row += [project_title, geo.latitude, geo.longitude]
-        # good << row.join(COL_SEP)
-        locations << location.merge( lat: geo.latitude, lng: geo.longitude )
+        lat, lng = geo.latitude, geo.longitude
       else
-        geo2 = Geocoder.search(project_title).first
-        if geo2
-          locations << location.merge( lat: geo2.latitude, lng: geo2.longitude )
-        else
-          refuseds << row.join(COL_SEP)
-          log_failure loc_name, project_title
+        geo = Geocoder.search(row[:project_title]).first
+        if geo
+          lat, lng = geo.latitude, geo.longitude
         end
       end
+      row.merge! lat: lat, lng: lng
 
-      sleep 0.5
+      sleep 0.1
     end
 
-    write_files name, good,  locations, refuseds
+    @ws = @ws.delete_and_remake
+    @ws.load_ruby rows
 
-    puts "\n\nfinished!\ngood: #{locations.size}, refuseds: #{refuseds.size}"
+    File.open "#{PATH}/data/a.json", "w" do |file|
+      file.write rows.to_json
+    end
+    puts "\n\nfinished!"
     # real geocoding api: http://code.google.com/apis/ajax/playground/#geocoding_simple
   end
 end
+
+

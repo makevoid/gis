@@ -44,7 +44,7 @@ marker_place = (loc) ->
     icon: image
   google.maps.event.addListener marker, 'click', ->
     # console.log locations
-    baloon.setContent "<p><strong>#{loc.name}</strong></p>#{label loc, "project_id"}#{label loc, "cris_id"}"
+    baloon.setContent "<p><strong>#{loc.name}</strong></p>#{label loc, "project_id"}#{label loc, "cris_id"}#{label loc, "project_title"}"
     baloon.open gmap, this
     return
 

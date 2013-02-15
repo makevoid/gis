@@ -62,7 +62,7 @@ marker_place = function(loc) {
     icon: image
   });
   return google.maps.event.addListener(marker, 'click', function() {
-    baloon.setContent("<p><strong>" + loc.name + "</strong></p>" + (label(loc, "project_id")) + (label(loc, "cris_id")));
+    baloon.setContent("<p><strong>" + loc.name + "</strong></p>" + (label(loc, "project_id")) + (label(loc, "cris_id")) + (label(loc, "project_title")));
     baloon.open(gmap, this);
   });
 };

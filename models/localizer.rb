@@ -6,6 +6,19 @@ require 'json'
 require 'geocoder'
 require 'google_drive'
 
+# monkeypatches
+
+class String
+  def blank?
+    self == ""
+  end
+end
+
+class NilClass
+  def blank?
+    true
+  end
+end
 
 # new feature:
 #
@@ -69,6 +82,7 @@ end
 
 class Localizer
   def initialize(names=NullName.new)
+    Geocoder.configure timeout: 10
     @names = [names].flatten
   end
 
@@ -89,11 +103,13 @@ class Localizer
 
     rows.each do |row|
       lat, lng = nil, nil
+      next unless row[:lat].blank?
       geo = Geocoder.search(row[:location_name]).first
 
       if geo
         lat, lng = geo.latitude, geo.longitude
       else
+        sleep 2
         geo = Geocoder.search(row[:project_title]).first
         if geo
           lat, lng = geo.latitude, geo.longitude
@@ -101,7 +117,7 @@ class Localizer
       end
       row.merge! lat: lat, lng: lng
 
-      sleep 0.1
+      sleep 2
     end
 
     @ws = @ws.delete_and_remake

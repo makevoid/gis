@@ -8,16 +8,6 @@ colors =
   blu:    "blue"
   verde:  "green"
 
-# fields =
-#   domain:
-#     ngo:    "blue"
-#     food:   "red"
-#     edf:    "green"
-#   year:
-#     "before_2002":  "blue"
-#     "2002-2006":    "red"
-#     "2007-2013":    "green"
-
 map_init = ->
   mapDiv = $ "#map"
   gmap = new google.maps.Map mapDiv.get(0),
@@ -44,16 +34,9 @@ label = (object, value) ->
 
 color_field = location.search[1..-1]
 
+debug = 0
+
 handle_color = (loc) ->
-
-  # color = "red"
-
-  # field = loc[color_field]
-  # scheme = fields[color_field]
-  # # console.log scheme
-  # color = scheme[field.toLowerCase()]
-
-  # color
   if color_field == "diff"
     if loc["performance"] == "pink"
       "red" # non monitoreds
@@ -63,6 +46,7 @@ handle_color = (loc) ->
     loc[color_field]
 
 marker_place = (loc) ->
+  return unless loc.lat
   color = handle_color loc
   return if color == "pink" # nil
   image = "/img/marker_med_#{color}.png"

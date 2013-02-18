@@ -1,4 +1,4 @@
-var baloon, color_field, colors, gmap, handle_color, label, locations, map_init, marker_place, markers;
+var baloon, color_field, colors, debug, gmap, handle_color, label, locations, map_init, marker_place, markers;
 
 gmap = null;
 
@@ -49,6 +49,8 @@ label = function(object, value) {
 
 color_field = location.search.slice(1);
 
+debug = 0;
+
 handle_color = function(loc) {
   if (color_field === "diff") {
     if (loc["performance"] === "pink") {
@@ -63,6 +65,9 @@ handle_color = function(loc) {
 
 marker_place = function(loc) {
   var color, image, latLng, marker;
+  if (!loc.lat) {
+    return;
+  }
   color = handle_color(loc);
   if (color === "pink") {
     return;

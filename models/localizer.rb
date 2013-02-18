@@ -128,12 +128,9 @@ class Localizer
     data = JSON.parse File.read "#{PATH}/data/a2.json"
 
     data.each_with_index do |obj, idx|
-      asso = assoc[idx]
-      # p asso
-      # puts
-
-      # FIXME: remove this
+      asso = assoc.find{ |as| as[ASSOC_FIELD] == obj["project_number"] }
       next unless asso
+      # p asso[ASSOC_FIELD]
 
       for field in FIELDS
         field = field.to_sym

@@ -16,3 +16,6 @@ env = ENV["RACK_ENV"] || "development"
 # DataMapper.setup :default, "mysql://localhost/sig_#{env}"
 # require_all "#{path}/models"
 # DataMapper.finalize
+
+
+require "#{path}/config/fields"

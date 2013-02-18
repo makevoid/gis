@@ -7,6 +7,7 @@
     = partial :metas
     :javascript
       var data_name = "#{@data_name}"
+      var fields = [ #{FIELDS2.map{ |f| "'#{f}'" }.join(", ")} ]
   %body
     #container
       %header
@@ -15,6 +16,10 @@
         %nav
           - LOCATIONS.each do |key, val|
             %a{ href: "/#{key}" }= key.capitalize
+
+          - FIELDS2.each do |field|
+            %a{ href: "/a?#{field}" }= field.to_s.capitalize.gsub(/_/, ' ')
+
       %section.content= yield
     %script{ type: "text/javascript", src: "/js/vendor/underscore.js" }
     %script{ type: "text/javascript", src: "/js/vendor/zepto.js" }

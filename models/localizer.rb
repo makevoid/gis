@@ -6,6 +6,10 @@ require 'json'
 require 'geocoder'
 require 'google_drive'
 
+PATH = File.expand_path "../../", __FILE__
+
+require "#{PATH}/config/fields"
+
 # monkeypatches
 
 class String
@@ -74,8 +78,28 @@ class GoogleDrive::Worksheet
 end
 
 
+class Csvr
 
-PATH = File.expand_path "../../", __FILE__
+  def read(path)
+    csv = CSV.read path
+    to_ruby csv
+  end
+
+  def to_ruby(all)
+    head = all[0]
+    table = all[1..-1]
+    results = []
+    for column in table
+      hash = {}
+      column.each_with_index do |row, idx|
+        hash[head[idx]] = row
+      end
+      results << hash
+    end
+    results
+  end
+
+end
 
 class NullName
 end
@@ -91,8 +115,55 @@ class Localizer
     spreadsheet = session.spreadsheet_by_key "0An6PEgBOu3TwdHZZNVMtNXBsR0ttR3BqaHI4cVllMEE"
     @ws = spreadsheet.worksheets[0]
 
-
     localize_one
+  end
+
+  ASSOC_FIELD = "CONTRACT_N"
+
+
+  # FIELDS removeds = PHY_RSC
+
+  def assoc
+    assoc = Csvr.new.read "#{PATH}/data/assoc/assoc.csv"
+    data = JSON.parse File.read "#{PATH}/data/a2.json"
+
+    data.each_with_index do |obj, idx|
+      asso = assoc[idx]
+      # p asso
+      # puts
+
+      # FIXME: remove this
+      next unless asso
+
+      for field in FIELDS
+        field = field.to_sym
+        value = asso.fetch field.upcase.to_s
+        obj[field] = value
+      end
+    end
+
+    data2 = {}
+
+    nil_color = "pink"
+    colors = %w(red green blue yellow dark_green dark_blue)
+
+    for field in FIELDS2
+      types = data.map{ |obj| obj[field] }.uniq.compact
+
+      for obj in data
+        value = obj[field]
+        color = nil_color
+        if value
+          type = types.index value
+          color = colors.fetch(type)
+        end
+        obj[field] = color
+      end
+    end
+
+    File.open("#{PATH}/data/a.json", "w") do |file|
+      file.write data.to_json
+    end
   end
 
   private

@@ -13,7 +13,7 @@ fields =
     ngo:    "blue"
     food:   "red"
     edf:    "green"
-  years:
+  year:
     "before_2002":  "blue"
     "2002-2006":    "red"
     "2007-2013":    "green"
@@ -49,7 +49,7 @@ handle_color = (loc) ->
 
   field = loc[color_field]
   scheme = fields[color_field]
-  # console.log scheme
+  console.log scheme
   color = scheme[field.toLowerCase()]
 
   color

@@ -141,11 +141,19 @@ class Localizer
 
     data2 = {}
 
+    associations = ["Associations - Color: Theme"]
+
     nil_color = "pink"
-    colors = %w(red green blue yellow dark_green dark_blue)
+    colors = %w(red green blue yellow dark_green light_blue)
 
     for field in FIELDS2
       types = data.map{ |obj| obj[field] }.uniq.compact
+
+      description = types.map.with_index do |type, idx|
+        type = "null" if type.blank?
+        "#{type}: #{colors[idx]}"
+      end.join(", ")
+      associations << "#{field}: #{description}"
 
       for obj in data
         value = obj[field]
@@ -157,6 +165,8 @@ class Localizer
         obj[field] = color
       end
     end
+
+    puts associations.join("\n")
 
     File.open("#{PATH}/data/a.json", "w") do |file|
       file.write data.to_json

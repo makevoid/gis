@@ -1,4 +1,4 @@
-var baloon, colors, gmap, label, locations, map_init, marker_place, markers;
+var baloon, color_field, colors, draw_buttons, fields, filters, gmap, handle_color, init_filters, label, locations, map_init, marker_place, markers;
 
 gmap = null;
 
@@ -11,6 +11,19 @@ colors = {
   giallo: "yellow",
   blu: "blue",
   verde: "green"
+};
+
+fields = {
+  domain: {
+    ngo: "blue",
+    food: "red",
+    edf: "green"
+  },
+  years: {
+    "before_2002": "blue",
+    "2002-2006": "red",
+    "2007-2013": "green"
+  }
 };
 
 map_init = function() {
@@ -41,19 +54,26 @@ markers = function() {
 
 label = function(object, value) {
   if (object[value]) {
-    return "<p>" + (value.replace(/_/, " ")) + ": " + object[value] + "</p>";
+    return "<p><strong>" + (value.replace(/_/, " ")) + ":</strong> " + object[value] + "</p>";
   } else {
     return "";
   }
 };
 
-marker_place = function(loc) {
-  var cat_color, color, image, latLng, marker;
+color_field = location.search.slice(1);
+
+handle_color = function(loc) {
+  var color, field, scheme;
   color = "red";
-  cat_color = colors[loc.category];
-  if (cat_color) {
-    color = cat_color;
-  }
+  field = loc[color_field];
+  scheme = fields[color_field];
+  color = scheme[field.toLowerCase()];
+  return color;
+};
+
+marker_place = function(loc) {
+  var color, image, latLng, marker;
+  color = handle_color(loc);
   image = "/img/marker_med_" + color + ".png";
   latLng = new google.maps.LatLng(loc.lat, loc.lng);
   marker = new google.maps.Marker({
@@ -62,11 +82,30 @@ marker_place = function(loc) {
     icon: image
   });
   return google.maps.event.addListener(marker, 'click', function() {
-    baloon.setContent("<p><strong>" + loc.name + "</strong></p>" + (label(loc, "project_id")) + (label(loc, "cris_id")) + (label(loc, "project_title")));
+    baloon.setContent("<p><strong>" + loc.location_name + "</strong></p>    " + (label(loc, "project_id")) + "    " + (label(loc, "cris_id")) + "    " + (label(loc, "project_title")) + "    " + (label(loc, "zone")) + "    " + (label(loc, "domain")) + "    " + (label(loc, "year")));
     baloon.open(gmap, this);
   });
 };
 
+filters = _(fields).keys();
+
+draw_buttons = function() {
+  var filter, nav, view, _i, _len, _results;
+  _results = [];
+  for (_i = 0, _len = filters.length; _i < _len; _i++) {
+    filter = filters[_i];
+    nav = $("nav");
+    view = "<a href='" + location.pathname + "?" + filter + "' class='filter'>" + filter + "</a>";
+    _results.push(nav.append(view));
+  }
+  return _results;
+};
+
+init_filters = function() {
+  return draw_buttons();
+};
+
 $(function() {
-  return map_init();
+  map_init();
+  return init_filters();
 });

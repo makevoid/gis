@@ -8,6 +8,16 @@ colors =
   blu:    "blue"
   verde:  "green"
 
+fields =
+  domain:
+    ngo:    "blue"
+    food:   "red"
+    edf:    "green"
+  years:
+    "before_2002":  "blue"
+    "2002-2006":    "red"
+    "2007-2013":    "green"
+
 map_init = ->
   mapDiv = $ "#map"
   gmap = new google.maps.Map mapDiv.get(0),
@@ -28,14 +38,24 @@ markers = ->
 
 label = (object, value) ->
   if object[value]
-    "<p>#{value.replace(/_/, " ")}: #{object[value]}</p>"
+    "<p><strong>#{value.replace(/_/, " ")}:</strong> #{object[value]}</p>"
   else
     ""
 
-marker_place = (loc) ->
+color_field = location.search[1..-1]
+
+handle_color = (loc) ->
   color = "red"
-  cat_color = colors[loc.category]
-  color = cat_color if cat_color
+
+  field = loc[color_field]
+  scheme = fields[color_field]
+  # console.log scheme
+  color = scheme[field.toLowerCase()]
+
+  color
+
+marker_place = (loc) ->
+  color = handle_color loc
   image = "/img/marker_med_#{color}.png"
   latLng = new google.maps.LatLng loc.lat, loc.lng
   marker = new google.maps.Marker
@@ -43,13 +63,32 @@ marker_place = (loc) ->
     map: gmap
     icon: image
   google.maps.event.addListener marker, 'click', ->
-    # console.log locations
-    baloon.setContent "<p><strong>#{loc.name}</strong></p>#{label loc, "project_id"}#{label loc, "cris_id"}#{label loc, "project_title"}"
+    # console.log loc
+    baloon.setContent "<p><strong>#{loc.location_name}</strong></p>
+    #{label loc, "project_id"}
+    #{label loc, "cris_id"}
+    #{label loc, "project_title"}
+    #{label loc, "zone"}
+    #{label loc, "domain"}
+    #{label loc, "year"}"
     baloon.open gmap, this
     return
 
 # baloon_closed = ->
 #   console.log "baloon close"
 
+filters = _(fields).keys()
+
+draw_buttons = ->
+  for filter in filters
+    nav  = $ "nav"
+    view = "<a href='#{location.pathname}?#{filter}' class='filter'>#{filter}</a>"
+    nav.append view
+
+init_filters = ->
+  draw_buttons()
+
+
 $ ->
   map_init()
+  init_filters()

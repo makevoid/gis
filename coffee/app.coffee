@@ -58,8 +58,8 @@ marker_place = (loc) ->
   google.maps.event.addListener marker, 'click', ->
     # console.log loc
     baloon.setContent "<p><strong>#{loc.location_name}</strong></p>
-    #{label loc, "project_id"}
-    #{label loc, "cris_id"}
+    #{label loc, "project_number"}
+    #{label loc, "cris_number"}
     #{label loc, "project_title"}
     #{label loc, "zone"}"
     #  #{label loc, "domain"}

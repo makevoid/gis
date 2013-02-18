@@ -17,6 +17,8 @@
           - LOCATIONS.each do |key, val|
             %a{ href: "/#{key}" }= key.capitalize
 
+          %a{ href: "/a?diff" } Diff
+
           - FIELDS2.each do |field|
             %a{ href: "/a?#{field}" }= field.to_s.capitalize.gsub(/_/, ' ')
 

@@ -54,8 +54,13 @@ handle_color = (loc) ->
   # color = scheme[field.toLowerCase()]
 
   # color
-
-  loc[color_field]
+  if color_field == "diff"
+    if loc["performance"] == "pink"
+      "red" # non monitoreds
+    else
+      "green" # monitoreds
+  else
+    loc[color_field]
 
 marker_place = (loc) ->
   color = handle_color loc

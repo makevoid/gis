@@ -50,7 +50,15 @@ label = function(object, value) {
 color_field = location.search.slice(1);
 
 handle_color = function(loc) {
-  return loc[color_field];
+  if (color_field === "diff") {
+    if (loc["performance"] === "pink") {
+      return "red";
+    } else {
+      return "green";
+    }
+  } else {
+    return loc[color_field];
+  }
 };
 
 marker_place = function(loc) {

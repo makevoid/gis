@@ -13,14 +13,15 @@
       %header
         %h1
           %a{ href: "https://github.com/makevoid/gis" }= TITLE
-        %nav
-          - LOCATIONS.each do |key, val|
-            %a{ href: "/#{key}" }= key.capitalize
-
-          %a{ href: "/a?diff" } Diff
-
-          - FIELDS2.each do |field|
-            %a{ href: "/a?#{field}" }= field.to_s.capitalize.gsub(/_/, ' ')
+        
+        -# %nav
+        -#   - LOCATIONS.each do |key, val|
+        -#     %a{ href: "/#{key}" }= key.capitalize
+        -# 
+        -#   %a{ href: "/a?diff" } Diff
+        -# 
+        -#   - FIELDS2.each do |field|
+        -#     %a{ href: "/a?#{field}" }= field.to_s.capitalize.gsub(/_/, ' ')
 
       %section.content= yield
     %script{ type: "text/javascript", src: "/js/vendor/underscore.js" }

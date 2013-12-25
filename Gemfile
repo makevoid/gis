@@ -1,4 +1,4 @@
-source :rubygems
+source "http://rubygems.org"
 
 gem "sinatra"
 gem "json"
@@ -21,6 +21,8 @@ group :development do
   # gem "growl"
 
   gem "geocoder"
+
+  gem "google_drive"
 end
 
 group :test do

@@ -2,11 +2,6 @@ gmap = null
 baloon = null
 locations = null
 
-colors =
-  rosso:  "red"
-  giallo: "yellow"
-  blu:    "blue"
-  verde:  "green"
 
 map_init = ->
   mapDiv = $ "#map"
@@ -32,18 +27,13 @@ label = (object, value) ->
   else
     ""
 
-color_field = location.search[1..-1]
+color_field = "color"
 
 debug = 0
 
 handle_color = (loc) ->
-  if color_field == "diff"
-    if loc["performance"] == "pink"
-      "red" # non monitoreds
-    else
-      "green" # monitoreds
-  else
-    loc[color_field]
+  loc[color_field]
+    
 
 marker_place = (loc) ->
   return unless loc.lat
@@ -56,14 +46,14 @@ marker_place = (loc) ->
     map: gmap
     icon: image
   google.maps.event.addListener marker, 'click', ->
-    # console.log loc
+    console.log loc
     baloon.setContent "<p><strong>#{loc.location_name}</strong></p>
-    #{label loc, "project_number"}
-    #{label loc, "cris_number"}
-    #{label loc, "project_title"}
-    #{label loc, "zone"}"
-    #  #{label loc, "domain"}
-    #  #{label loc, "year"}"
+    #{label loc, "group_number"}" 
+    #  #{label loc, "cris_number"} 
+    #  #{label loc, "project_title"}
+    #  #{label loc, "zone"}
+    #  #{label loc, "domain"} 
+    #  #{label loc, "year"} "
     baloon.open gmap, this
     return
 

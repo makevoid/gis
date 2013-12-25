@@ -1,6 +1,6 @@
 # configs
 
-app_name = "gis"
+app_name = "gmaps_gis"
 
 
 # deploy

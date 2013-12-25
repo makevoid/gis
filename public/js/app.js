@@ -1,17 +1,10 @@
-var baloon, color_field, colors, debug, gmap, handle_color, label, locations, map_init, marker_place, markers;
+var baloon, color_field, debug, gmap, handle_color, label, locations, map_init, marker_place, markers;
 
 gmap = null;
 
 baloon = null;
 
 locations = null;
-
-colors = {
-  rosso: "red",
-  giallo: "yellow",
-  blu: "blue",
-  verde: "green"
-};
 
 map_init = function() {
   var mapDiv;
@@ -47,20 +40,12 @@ label = function(object, value) {
   }
 };
 
-color_field = location.search.slice(1);
+color_field = "color";
 
 debug = 0;
 
 handle_color = function(loc) {
-  if (color_field === "diff") {
-    if (loc["performance"] === "pink") {
-      return "red";
-    } else {
-      return "green";
-    }
-  } else {
-    return loc[color_field];
-  }
+  return loc[color_field];
 };
 
 marker_place = function(loc) {
@@ -80,7 +65,8 @@ marker_place = function(loc) {
     icon: image
   });
   return google.maps.event.addListener(marker, 'click', function() {
-    baloon.setContent("<p><strong>" + loc.location_name + "</strong></p>    " + (label(loc, "project_number")) + "    " + (label(loc, "cris_number")) + "    " + (label(loc, "project_title")) + "    " + (label(loc, "zone")));
+    console.log(loc);
+    baloon.setContent("<p><strong>" + loc.location_name + "</strong></p>    " + (label(loc, "group_number")));
     baloon.open(gmap, this);
   });
 };

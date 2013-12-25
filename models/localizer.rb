@@ -105,6 +105,10 @@ class NullName
 end
 
 class Localizer
+
+  # spreadsheet key, get it from docs.google.com > your spreadsheet > share (the spreadsheet needs to be public)
+  SPREADSHEET = "0An6PEgBOu3TwdDIwTXp2LWtqcUlJR3RnME44bF9ad1E"
+
   def initialize(names=NullName.new)
     Geocoder.configure timeout: 10
     @names = [names].flatten
@@ -112,7 +116,7 @@ class Localizer
 
   def localize
     session = GoogleDrive.login "m4kevoid@gmail.com", "finalman"
-    spreadsheet = session.spreadsheet_by_key "0An6PEgBOu3TwdHZZNVMtNXBsR0ttR3BqaHI4cVllMEE"
+    spreadsheet = session.spreadsheet_by_key SPREADSHEET
     @ws = spreadsheet.worksheets[0]
 
     localize_one
@@ -128,7 +132,7 @@ class Localizer
     data = JSON.parse File.read "#{PATH}/data/a2.json"
 
     data.each_with_index do |obj, idx|
-      asso = assoc.find{ |as| as[ASSOC_FIELD] == obj["project_number"] }
+      asso = assoc.find{ |as| as[ASSOC_FIELD] == obj["group_number"] }
       next unless asso
       # p asso[ASSOC_FIELD]
 

@@ -33,13 +33,15 @@ debug = 0
 
 handle_color = (loc) ->
   loc[color_field]
-    
+
 
 marker_place = (loc) ->
   return unless loc.lat
   color = handle_color loc
   return if color == "pink" # nil
-  image = "/img/marker_med_#{color}.png"
+  size = "med"
+  size = "big" if loc.grandi
+  image = "/img/marker_#{size}_#{color}.png"
   latLng = new google.maps.LatLng loc.lat, loc.lng
   marker = new google.maps.Marker
     position: latLng
@@ -48,11 +50,11 @@ marker_place = (loc) ->
   google.maps.event.addListener marker, 'click', ->
     console.log loc
     baloon.setContent "<p><strong>#{loc.location_name}</strong></p>
-    #{label loc, "group_number"}" 
-    #  #{label loc, "cris_number"} 
+    #{label loc, "group_number"}"
+    #  #{label loc, "cris_number"}
     #  #{label loc, "project_title"}
     #  #{label loc, "zone"}
-    #  #{label loc, "domain"} 
+    #  #{label loc, "domain"}
     #  #{label loc, "year"} "
     baloon.open gmap, this
     return

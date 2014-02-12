@@ -49,7 +49,7 @@ handle_color = function(loc) {
 };
 
 marker_place = function(loc) {
-  var color, image, latLng, marker;
+  var color, image, latLng, marker, size;
   if (!loc.lat) {
     return;
   }
@@ -57,7 +57,11 @@ marker_place = function(loc) {
   if (color === "pink") {
     return;
   }
-  image = "/img/marker_med_" + color + ".png";
+  size = "med";
+  if (loc.grandi) {
+    size = "big";
+  }
+  image = "/img/marker_" + size + "_" + color + ".png";
   latLng = new google.maps.LatLng(loc.lat, loc.lng);
   marker = new google.maps.Marker({
     position: latLng,

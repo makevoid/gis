@@ -1,3 +1,5 @@
 # TODO: Localizer.new.localize $1
 
-ruby -e "loc = Localizer.new; loc.localize; loc.assoc" -r ./models/localizer.rb
+ruby -e "loc = Localizer.new; loc.localize" -r ./models/localizer.rb
+
+# ruby -e "loc = Localizer.new; loc.localize; loc.assoc" -r ./models/localizer.rb

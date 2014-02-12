@@ -1,6 +1,6 @@
 # ruby -e "Localizer.new.localize" -r ./models/localizer.rb
 #
-# gets names and categories from locations.csv, geolocate names and save locations.json
+# gets names and categories from google Spreadsheets, geolocate names and save locations.json
 
 require 'json'
 require 'geocoder'
@@ -54,7 +54,6 @@ class GoogleDrive::Worksheet
   end
 
   def load_ruby(array)
-
     keys = array.first.keys
 
     keys.each_with_index do |key, idx|

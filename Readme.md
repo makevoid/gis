@@ -19,7 +19,7 @@ creates google maps with markers from CSVs
 - visit http://localhost:3000
 
 
-### convert locations.csv to locations.json geocoding locations
+### convert google Spreadsheet to locations.json geocoding locations
 
    ruby -e "Localizer.new.localize" -r ./models/localizer.rb
 
